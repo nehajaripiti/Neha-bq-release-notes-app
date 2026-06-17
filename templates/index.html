@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sleek dashboard to browse, search, filter Google Cloud BigQuery release notes and instantly share updates to X (Twitter).">
+    <title>BigQuery Release Insights</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Background Ambient Glows -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>BigQuery</h1>
+                    <span>Release Notes</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="refresh-btn" class="btn btn-primary" title="Refresh Release Notes">
+                    <i class="fa-solid fa-arrows-rotate spinner-icon"></i>
+                    <span>Refresh Feed</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats and Filter Section -->
+        <section class="controls-section">
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="Search release notes by keyword..." autocomplete="off">
+                <button id="clear-search-btn" class="clear-btn" style="display: none;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="filters-container">
+                <div class="filter-tabs" id="filter-tabs">
+                    <button class="filter-tab active" data-category="all">
+                        <i class="fa-solid fa-list"></i> All Updates
+                    </button>
+                    <button class="filter-tab" data-category="Feature">
+                        <i class="fa-solid fa-wand-magic-sparkles text-feature"></i> Features
+                    </button>
+                    <button class="filter-tab" data-category="Announcement">
+                        <i class="fa-solid fa-bullhorn text-announcement"></i> Announcements
+                    </button>
+                    <button class="filter-tab" data-category="Issue">
+                        <i class="fa-solid fa-triangle-exclamation text-issue"></i> Issues
+                    </button>
+                    <button class="filter-tab" data-category="Change">
+                        <i class="fa-solid fa-sliders text-change"></i> Changes
+                    </button>
+                    <button class="filter-tab" data-category="Deprecation">
+                        <i class="fa-solid fa-ban text-deprecation"></i> Deprecations
+                    </button>
+                </div>
+                <div class="stats-counter">
+                    <span id="showing-count">0</span> / <span id="total-count">0</span> updates
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Loading Skeleton -->
+            <div id="loading-state" class="notes-grid">
+                <!-- 6 Skeleton Cards -->
+                <div class="skeleton-card">
+                    <div class="skeleton-line header-skeleton"></div>
+                    <div class="skeleton-line content-skeleton-1"></div>
+                    <div class="skeleton-line content-skeleton-2"></div>
+                    <div class="skeleton-line content-skeleton-3"></div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-line footer-skeleton-1"></div>
+                        <div class="skeleton-line footer-skeleton-2"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-line header-skeleton"></div>
+                    <div class="skeleton-line content-skeleton-1"></div>
+                    <div class="skeleton-line content-skeleton-2"></div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-line footer-skeleton-1"></div>
+                        <div class="skeleton-line footer-skeleton-2"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-line header-skeleton"></div>
+                    <div class="skeleton-line content-skeleton-1"></div>
+                    <div class="skeleton-line content-skeleton-2"></div>
+                    <div class="skeleton-line content-skeleton-3"></div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-line footer-skeleton-1"></div>
+                        <div class="skeleton-line footer-skeleton-2"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-line header-skeleton"></div>
+                    <div class="skeleton-line content-skeleton-1"></div>
+                    <div class="skeleton-line content-skeleton-2"></div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-line footer-skeleton-1"></div>
+                        <div class="skeleton-line footer-skeleton-2"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-line header-skeleton"></div>
+                    <div class="skeleton-line content-skeleton-1"></div>
+                    <div class="skeleton-line content-skeleton-2"></div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-line footer-skeleton-1"></div>
+                        <div class="skeleton-line footer-skeleton-2"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-line header-skeleton"></div>
+                    <div class="skeleton-line content-skeleton-1"></div>
+                    <div class="skeleton-line content-skeleton-2"></div>
+                    <div class="skeleton-line content-skeleton-3"></div>
+                    <div class="skeleton-footer">
+                        <div class="skeleton-line footer-skeleton-1"></div>
+                        <div class="skeleton-line footer-skeleton-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="error-container" style="display: none;">
+                <div class="error-icon">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                </div>
+                <h2>Failed to Fetch Release Notes</h2>
+                <p id="error-message">We encountered an issue connecting to the Google Cloud RSS feed. Please check your network connection and try again.</p>
+                <button id="retry-btn" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrows-rotate"></i> Retry Connection
+                </button>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-container" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h2>No Updates Found</h2>
+                <p>No release notes matched your search query or selected category filter.</p>
+                <button id="reset-filters-btn" class="btn btn-secondary-light">
+                    Clear Search & Filters
+                </button>
+            </div>
+
+            <!-- Notes Cards Grid -->
+            <div id="notes-grid" class="notes-grid" style="display: none;">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>BigQuery Release Notes parsed from the official Google Cloud feed.</p>
+            <p>Built with Python Flask & Plain HTML/JS/CSS.</p>
+        </footer>
+    </div>
+
+    <!-- Twitter Composer Modal -->
+    <div id="tweet-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-brands fa-x-twitter"></i> Share Update on X</h3>
+                <button id="close-modal-btn" class="close-btn" title="Close Composer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="note-preview-box">
+                    <div class="preview-badge" id="preview-badge">Feature</div>
+                    <div class="preview-date" id="preview-date">June 16, 2026</div>
+                    <div class="preview-text" id="preview-text">Note contents...</div>
+                </div>
+                
+                <div class="composer-field">
+                    <div class="label-row">
+                        <label for="tweet-textarea">Compose your Tweet</label>
+                    </div>
+                    <textarea id="tweet-textarea" rows="6" maxlength="500" placeholder="What would you like to tweet?"></textarea>
+                    
+                    <div class="composer-meta">
+                        <div class="character-counter" id="char-counter">
+                            <svg class="progress-ring" width="24" height="24">
+                                <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.1)" stroke-width="2.5" fill="transparent" r="10" cx="12" cy="12"/>
+                                <circle class="progress-ring__circle" stroke="#1d9bf0" stroke-width="2.5" fill="transparent" r="10" cx="12" cy="12"/>
+                            </svg>
+                            <span id="char-number">280</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tags-helper">
+                    <span class="helper-label">Quick Tags:</span>
+                    <button class="tag-pill" data-tag="#BigQuery">#BigQuery</button>
+                    <button class="tag-pill" data-tag="#GoogleCloud">#GoogleCloud</button>
+                    <button class="tag-pill" data-tag="#DataAnalytics">#DataAnalytics</button>
+                    <button class="tag-pill" data-tag="#AI">#AI</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="copy-tweet-btn" class="btn btn-secondary-light">
+                    <i class="fa-solid fa-copy"></i> Copy Text
+                </button>
+                <button id="submit-tweet-btn" class="btn btn-twitter">
+                    <i class="fa-brands fa-x-twitter"></i> Tweet Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-check-circle toast-icon"></i>
+        <span id="toast-message">Copied to clipboard!</span>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
